@@ -4,11 +4,13 @@ const {
   createClass,
   editClass,
   getClassById,
+  deleteClass,
 } = require("../controllers/class");
 // Extract class id, finds it and add to req obj
 router.param("classId", getClassById);
 
-router.post("/class/create", isSignedIn, isAuthenticated, createClass);
-router.put("/class/edit/:classId", isSignedIn, isAuthenticated, editClass);
+router.post("/class", isSignedIn, isAuthenticated, createClass);
+router.put("/class/:classId", isSignedIn, isAuthenticated, editClass);
+router.delete("/class/:classId", isSignedIn, isAuthenticated, deleteClass);
 
 module.exports = router;

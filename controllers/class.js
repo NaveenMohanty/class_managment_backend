@@ -1,12 +1,14 @@
 const User = require("../model/user");
 const Class = require("../model/class");
 const Joi = require("joi");
+const classHelper = require("../helper/class");
 
 exports.getClassById = async (req, res, next, id) => {
   try {
     if (id) {
       let classData = await Class.findById(id);
-      req.classData = classData;
+      if (classData) req.classData = classData;
+      else throw { message: "Class not found", status: 404 };
       next();
     } else {
       throw { message: "class_id is undefined", status: 400 };
@@ -77,24 +79,28 @@ exports.editClass = async (req, res) => {
       let keys = Object.keys(value);
       let promises = keys.map((v) => {
         return new Promise(async (resolve, reject) => {
-          if (v === "teacher_id" && classData.teacher_id !== value[v]) {
-            let teacher = await User.findById(classData.teacher_id);
-            teacher.class_ids = teacher.class_ids.filter(
-              (v) => String(v) !== String(classData._id)
-            );
-            await teacher.save();
-            teacher = await User.findById(value[v]);
-            if (teacher.role !== "teacher") {
-              reject({
-                message: "teacher_id role is not teacher",
-                status: 400,
-              });
+          try {
+            if (v === "teacher_id" && classData.teacher_id !== value[v]) {
+              let teacher = await User.findById(classData.teacher_id);
+              teacher.class_ids = teacher.class_ids.filter(
+                (v) => String(v) !== String(classData._id)
+              );
+              await teacher.save();
+              teacher = await User.findById(value[v]);
+              if (teacher.role !== "teacher") {
+                throw {
+                  message: "teacher_id role is not teacher",
+                  status: 400,
+                };
+              }
+              teacher.class_ids.push(classData._id);
+              await teacher.save();
             }
-            teacher.class_ids.push(classData._id);
-            await teacher.save();
+            classData[v] = value[v];
+            resolve();
+          } catch (er) {
+            reject(er);
           }
-          classData[v] = value[v];
-          resolve();
         });
       });
 
@@ -107,6 +113,45 @@ exports.editClass = async (req, res) => {
       });
     } else {
       throw error;
+    }
+  } catch (err) {
+    res.status(err.status || 500).json({
+      success: false,
+      error: err.message || "Internal server error",
+    });
+  }
+};
+
+exports.deleteClass = async (req, res) => {
+  try {
+    const { classData, user } = req;
+    if (String(user._id) === String(classData.instructor_id)) {
+      await classHelper.removeClassFromUser(
+        classData.instructor_id,
+        classData._id
+      );
+      await classHelper.removeClassFromUser(
+        classData.teacher_id,
+        classData._id
+      );
+      let promises = classData.student_ids.map((id) => {
+        return new Promise(async (resolve, reject) => {
+          try {
+            await classHelper.removeClassFromUser(id, classData._id);
+            resolve(true);
+          } catch (er) {
+            reject(er);
+          }
+        });
+      });
+      await Promise.all(promises);
+      await Class.deleteOne({ _id: classData._id });
+      res.json({
+        success: true,
+        message: "Class deleted successfully",
+      });
+    } else {
+      throw { message: "User not authorized to delete", status: 400 };
     }
   } catch (err) {
     res.status(err.status || 500).json({
