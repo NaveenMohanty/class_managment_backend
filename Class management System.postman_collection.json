@@ -1,0 +1,288 @@
+{
+	"info": {
+		"_postman_id": "a8eadcc5-aa80-45f9-b5b4-11421e0803e8",
+		"name": "Class management System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "user register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"student2\",\n    \"email\":\"studen2@test.com\",\n    \"role\":\"student\",\n    \"password\":\"123456789\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/register",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"register"
+					]
+				},
+				"description": "User can register given its details"
+			},
+			"response": []
+		},
+		{
+			"name": "user login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"naveen@test.com\",\n    \"password\":\"123456789\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/login",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"login"
+					]
+				},
+				"description": "User can loging given its email password"
+			},
+			"response": []
+		},
+		{
+			"name": "user logout",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/logout",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"logout"
+					]
+				},
+				"description": "User can logout"
+			},
+			"response": []
+		},
+		{
+			"name": "create class",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"topic\":\"smaple class\",\n    \"teacher_id\":\"{{teacher_id}}\",\n    \"start_time\":\"Thu Jun 18 2021 13:58:44 GMT+0530 (India Standard Time)\",\n    \"end_time\":\"Thu Jun 18 2021 14:58:44 GMT+0530 (India Standard Time)\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/class",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"class"
+					]
+				},
+				"description": "Instructor can create class by giving details"
+			},
+			"response": []
+		},
+		{
+			"name": "edit class",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"topic\": \"smaple class 2\",\n    \"start_time\": \"Fri Jun 18 2021 13:58:44 GMT+0530 (India Standard Time)\",\n    \"end_time\": \"Fri Jun 18 2021 14:00:44 GMT+0530 (India Standard Time)\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/class/{{class_id}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"class",
+						"{{class_id}}"
+					]
+				},
+				"description": "Instructor can edit class by giving details"
+			},
+			"response": []
+		},
+		{
+			"name": "delete class",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/class/{{class_id}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"class",
+						"{{class_id}}"
+					]
+				},
+				"description": "Instructor can delete class"
+			},
+			"response": []
+		},
+		{
+			"name": "add students list to class",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"student_ids\":[\"60cb151ad3a4d97b06dbe153\",\"60cb150cd3a4d97b06dbe151\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/class/addstudent/{{class_id}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"class",
+						"addstudent",
+						"{{class_id}}"
+					]
+				},
+				"description": "Instructor and the assigned teacher can add students to class by giving students ids array"
+			},
+			"response": []
+		},
+		{
+			"name": "get class data from user class list",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/class/list",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"class",
+						"list"
+					]
+				},
+				"description": " * Instructor gets the list of class it has created\n * Teacher gets the list of class it has been assigned as a teacher\n * Students gets the list of class in which they are enrolled\n "
+			},
+			"response": []
+		},
+		{
+			"name": "get user lists for given role",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/user/list?role=student",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"user",
+						"list"
+					],
+					"query": [
+						{
+							"key": "role",
+							"value": "student"
+						}
+					]
+				},
+				"description": " * Instructor can access list of teachers,students and other instructors\n * Teacher can access list of students\n * student cannot access and user list\n * All this conditioning is done based on user role\n * pass the query as role to get user list of that role\n "
+			},
+			"response": []
+		}
+	]
+}
