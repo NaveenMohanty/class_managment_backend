@@ -160,3 +160,40 @@ exports.deleteClass = async (req, res) => {
     });
   }
 };
+
+exports.addStudentsToClass = async (req, res) => {
+  try {
+    const { classData, user, body } = req;
+    const { error, value } = Joi.object({
+      student_ids: Joi.array().items(Joi.string().required()),
+    }).validate(body);
+    const roleChecker = user.role === "teacher" || user.role === "instructor";
+    const accessChecker =
+      String(classData.instructor_id) === String(user._id) ||
+      String(classData.teacher_id) === String(user._id);
+    if (roleChecker && accessChecker && !error) {
+      let currentStudentsIds = classData.student_ids;
+      let newStudentsIds = value.student_ids;
+      let add = newStudentsIds.filter(
+        (x) => !currentStudentsIds.includes(String(x))
+      );
+      let dele = currentStudentsIds.filter(
+        (x) => !newStudentsIds.includes(String(x))
+      );
+      await classHelper.addClassToStudents(add, classData._id);
+      await classHelper.deleClassFromStudents(dele, classData._id);
+      classData.student_ids = value.student_ids;
+      await classData.save();
+      res.json({ success: true, message: "Students list Updated" });
+    } else {
+      if (error) throw error;
+      else
+        throw { message: "User not authorized to add Students", status: 400 };
+    }
+  } catch (err) {
+    res.status(err.status || 500).json({
+      success: false,
+      error: err.message || "Internal server error",
+    });
+  }
+};

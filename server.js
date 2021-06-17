@@ -25,7 +25,7 @@ app.use(cors());
 
 // Routes
 app.get("/", (req, res) => {
-  res.send("Welcome to Class Management System Backend");
+  res.send("Welcome to Class Management System Backend!!");
 });
 app.use("/api", authRoutes);
 app.use("/api", classRoutes);
