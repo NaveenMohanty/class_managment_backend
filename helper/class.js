@@ -1,4 +1,5 @@
 const User = require("../model/user");
+const Class = require("../model/class");
 
 const classHelper = {
   removeClassFromUser: async (user_id, class_id) => {
@@ -55,6 +56,26 @@ const classHelper = {
             };
           }
           resolve(true);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+    return await Promise.all(promises);
+  },
+  createClassList: async (classIdList) => {
+    let promises = classIdList.map((id) => {
+      return new Promise(async (resolve, reject) => {
+        try {
+          let classData = await Class.findById(id);
+          if (classData) {
+            resolve(classData);
+          } else {
+            throw {
+              message: `Class with id:${id} not found in Database`,
+              status: 400,
+            };
+          }
         } catch (error) {
           reject(error);
         }

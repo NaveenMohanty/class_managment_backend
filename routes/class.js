@@ -6,6 +6,7 @@ const {
   getClassById,
   deleteClass,
   addStudentsToClass,
+  getClassList,
 } = require("../controllers/class");
 // Extract class id, finds it and add to req obj
 router.param("classId", getClassById);
@@ -19,5 +20,6 @@ router.put(
   isAuthenticated,
   addStudentsToClass
 );
+router.get("/class/list", isSignedIn, isAuthenticated, getClassList);
 
 module.exports = router;

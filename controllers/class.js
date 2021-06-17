@@ -197,3 +197,16 @@ exports.addStudentsToClass = async (req, res) => {
     });
   }
 };
+
+exports.getClassList = async (req, res) => {
+  try {
+    const { user } = req;
+    let data = await classHelper.createClassList(user.class_ids);
+    res.json({ success: true, data });
+  } catch (err) {
+    res.status(err.status || 500).json({
+      success: false,
+      error: err.message || "Internal server error",
+    });
+  }
+};
