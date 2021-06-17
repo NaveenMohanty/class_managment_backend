@@ -5,10 +5,12 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
+const { errorHandler } = require("./helper/errorHandler");
 
 // import of routes
 const authRoutes = require("./routes/auth");
 const classRoutes = require("./routes/class");
+const userRoutes = require("./routes/user");
 
 // DB connection
 mongoose.connect(process.env.DATABASE, {
@@ -29,8 +31,10 @@ app.get("/", (req, res) => {
 });
 app.use("/api", authRoutes);
 app.use("/api", classRoutes);
-// app.use("/api", userRoutes);
-// app.use("/api", answerRoutes);
+app.use("/api", userRoutes);
+
+//error handelling middleware
+app.use(errorHandler);
 
 // Port number
 const PORT = process.env.PORT || 5000;

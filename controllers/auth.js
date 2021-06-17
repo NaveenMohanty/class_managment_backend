@@ -3,7 +3,7 @@ const Joi = require("joi");
 var jwt = require("jsonwebtoken");
 var expressJwt = require("express-jwt");
 
-exports.Register = async (req, res) => {
+exports.Register = async (req, res, next) => {
   try {
     const { body } = req;
     const { error, value } = Joi.object({
@@ -30,17 +30,11 @@ exports.Register = async (req, res) => {
       }
     }
   } catch (err) {
-    if (err && err.message && !err.status) {
-      err.status = 400;
-    }
-    res.status(err.status || 500).json({
-      success: false,
-      error: err.message || "Internal server error",
-    });
+    next(err);
   }
 };
 
-exports.login = async (req, res) => {
+exports.login = async (req, res, next) => {
   try {
     const { body } = req;
     const { error, value } = Joi.object({
@@ -71,13 +65,7 @@ exports.login = async (req, res) => {
       });
     }
   } catch (err) {
-    if (err && err.message && !err.status) {
-      err.status = 400;
-    }
-    res.status(err.status || 500).json({
-      success: false,
-      error: err.message || "Internal server error",
-    });
+    next(err);
   }
 };
 
@@ -116,9 +104,6 @@ exports.isAuthenticated = async (req, res, next) => {
     }
     next();
   } catch (err) {
-    res.status(err.status || 500).json({
-      success: false,
-      error: err.message || "Internal server error",
-    });
+    next(err);
   }
 };

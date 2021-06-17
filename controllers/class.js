@@ -14,14 +14,11 @@ exports.getClassById = async (req, res, next, id) => {
       throw { message: "class_id is undefined", status: 400 };
     }
   } catch (err) {
-    res.status(err.status || 500).json({
-      success: false,
-      error: err.message || "Internal server error",
-    });
+    next(err);
   }
 };
 
-exports.createClass = async (req, res) => {
+exports.createClass = async (req, res, next) => {
   try {
     const { body, user } = req;
     const { error, value } = Joi.object({
@@ -59,14 +56,11 @@ exports.createClass = async (req, res) => {
       throw error;
     }
   } catch (err) {
-    res.status(err.status || 500).json({
-      success: false,
-      error: err.message || "Internal server error",
-    });
+    next(err);
   }
 };
 
-exports.editClass = async (req, res) => {
+exports.editClass = async (req, res, next) => {
   try {
     const { body, classData, user } = req;
     const { error, value } = Joi.object({
@@ -115,14 +109,11 @@ exports.editClass = async (req, res) => {
       throw error;
     }
   } catch (err) {
-    res.status(err.status || 500).json({
-      success: false,
-      error: err.message || "Internal server error",
-    });
+    next(err);
   }
 };
 
-exports.deleteClass = async (req, res) => {
+exports.deleteClass = async (req, res, next) => {
   try {
     const { classData, user } = req;
     if (String(user._id) === String(classData.instructor_id)) {
@@ -154,14 +145,11 @@ exports.deleteClass = async (req, res) => {
       throw { message: "User not authorized to delete", status: 400 };
     }
   } catch (err) {
-    res.status(err.status || 500).json({
-      success: false,
-      error: err.message || "Internal server error",
-    });
+    next(err);
   }
 };
 
-exports.addStudentsToClass = async (req, res) => {
+exports.addStudentsToClass = async (req, res, next) => {
   try {
     const { classData, user, body } = req;
     const { error, value } = Joi.object({
@@ -191,22 +179,16 @@ exports.addStudentsToClass = async (req, res) => {
         throw { message: "User not authorized to add Students", status: 400 };
     }
   } catch (err) {
-    res.status(err.status || 500).json({
-      success: false,
-      error: err.message || "Internal server error",
-    });
+    next(err);
   }
 };
 
-exports.getClassList = async (req, res) => {
+exports.getClassList = async (req, res, next) => {
   try {
     const { user } = req;
     let data = await classHelper.createClassList(user.class_ids);
     res.json({ success: true, data });
   } catch (err) {
-    res.status(err.status || 500).json({
-      success: false,
-      error: err.message || "Internal server error",
-    });
+    next(err);
   }
 };
