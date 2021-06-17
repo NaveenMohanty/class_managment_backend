@@ -110,7 +110,7 @@ exports.editClass = async (req, res, next) => {
       });
     } else {
       if (error) throw error;
-      else throw { message: "Not allowed to modify by you", status: 400 };
+      else throw { message: "User not authorized to edit", status: 400 };
     }
   } catch (err) {
     next(err);
