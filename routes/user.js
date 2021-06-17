@@ -7,6 +7,7 @@ const { getUserList } = require("../controllers/user");
  * Teacher can access list of students
  * student cannot access and user list
  * All this conditioning is done based on user role
+ * pass the query as role to get user list of that role
  */
 router.get("/user/list", isSignedIn, isAuthenticated, getUserList);
 
