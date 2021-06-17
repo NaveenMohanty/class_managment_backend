@@ -69,7 +69,10 @@ exports.editClass = async (req, res, next) => {
       end_time: Joi.date().greater(Joi.ref("start_time")).optional(),
       teacher_id: Joi.string().optional(),
     }).validate(body);
-    if (!error) {
+    let checker =
+      String(user._id) === String(classData.instructor_id) ||
+      String(user._id) === String(classData.teacher_id);
+    if (!error && checker) {
       let keys = Object.keys(value);
       let promises = keys.map((v) => {
         return new Promise(async (resolve, reject) => {
@@ -106,7 +109,8 @@ exports.editClass = async (req, res, next) => {
         data,
       });
     } else {
-      throw error;
+      if (error) throw error;
+      else throw { message: "Not allowed to modify by you", status: 400 };
     }
   } catch (err) {
     next(err);

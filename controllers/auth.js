@@ -46,7 +46,12 @@ exports.login = async (req, res, next) => {
       throw error;
     } else {
       let user = await User.findOne({ email: value.email });
-      if (!user.autheticate(value.password)) {
+      if (!user) {
+        throw {
+          status: 404,
+          message: `User with email:${value.email} not found`,
+        };
+      } else if (!user.autheticate(value.password)) {
         throw { status: 401, message: "Password do not match" };
       }
 
